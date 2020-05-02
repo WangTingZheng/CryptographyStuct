@@ -1,4 +1,22 @@
 ## 密码框架
+
+### 安装
+右键点击项目，选择`Add framework suppurt`，再选择`Maven`
+
+![maven](./docs/image/maven.png)
+
+在生成的`pom.xml`文件下的项目里添加:
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>com.wangtingzheng.cryptography</groupId>
+            <artifactId>CryptographyStuct</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+    </dependencies>
+```
+升级本库的时候，可以修改`version`的值
+
 ### 使用
 首先，你必须继承算法类`Algorithm`,并重写里面的各种方法，选择你愿意使用的构造方法:
 ![constructor](./docs/image/consturctors.png)
