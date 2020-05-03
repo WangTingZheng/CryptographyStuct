@@ -1,5 +1,7 @@
 package com.wangtingzheng.cryptographystuct.matrix;
 
+import com.wangtingzheng.cryptographystuct.error.Error;
+import com.wangtingzheng.cryptographystuct.error.ErrorList;
 import java.util.List;
 
 /**
@@ -19,23 +21,156 @@ public class Matrix {
     public static class Type
     {
         public static int none = 0;
-        public static int IntMatrix =1;
+        public static int IntMatrix = 1;
         public static int CharMatrix = 2;
     }
-    private int type;
 
+    public static class ErrorNumber
+    {
+        public static int MatrixSizeNotMatch = 1;
+        public static int ColumnAndRowNotMatchAtTwo = 2;
+        public static int ColumnAndRowNotMatch = 3;
+        public static int NotIncrementalSeries = 4;
+        public static int NotTwoRow = 5;
+    }
 
-    public int[][] intData;
-    public char[][] charData;
+    private int type;  //矩阵的类型，定义在Matrix.Type中
+    public int[][] intData;  //int型矩阵的数据存储二维数组
+    public char[][] charData; //char型矩阵的数据存储二维数组
+    public ErrorList errorList;  //错误列表，存储程序运行时出现过的错误
+    public int defaultInt = 0;  //默认int型元素值，当二维数组的各行长度不一样时，填补较短行空白元素的值
+    public char defaultChar = 'a'; //默认char型元素值，当二维数组的各行长度不一样时，填补较短行空白元素的值
+
+    /**
+     * 错误设定初始化函数，设定了在本类中会出现的错误的id和发生时执行的函数
+     */
+    public void errorInit()
+    {
+        Error error1 = new Error(ErrorNumber.MatrixSizeNotMatch, this.getClass()) {
+            @Override
+            public void errorReport() {
+                System.out.println("Two matrix have different row number or column number!");
+            }
+        };
+        Error error2 = new Error(ErrorNumber.ColumnAndRowNotMatchAtTwo, this.getClass()) {
+            @Override
+            public void errorReport() {
+                System.out.println("First matrix column not equals with second matrix row");
+            }
+        };
+
+        Error error3 = new Error(ErrorNumber.ColumnAndRowNotMatch, this.getClass()) {
+            @Override
+            public void errorReport() {
+                System.out.println("Matrix's row doesn't equal column.");
+            }
+        };
+
+        Error error4 = new Error(ErrorNumber.NotIncrementalSeries, this.getClass()) {
+            @Override
+            public void errorReport() {
+                System.out.println("Cryptography inverse can only uses  in incremental series.");
+            }
+        };
+
+        Error error5 = new Error(ErrorNumber.NotTwoRow, this.getClass()) {
+            @Override
+            public void errorReport() {
+                System.out.println("Cryptography inverse can only uses in 2*1 matrix.");
+            }
+        };
+
+        ErrorList errorList = new ErrorList(error1);
+        errorList.addError(error2);
+        errorList.addError(error3);
+        errorList.addError(error4);
+        errorList.addError(error5);
+        this.errorList = errorList;
+    }
 
 
     /**
-     * 使用int型二维数组创建Matrix对象
+     * 使用int型二维数组创建Matrix对象, 使用默认数字填充空白处，也就是0
      * @param intData 要输入的int型二维数组
      */
     public Matrix(int[][] intData) {
         type = Type.IntMatrix;
-        this.intData = intData;
+        setIntAarry(intData, defaultInt);
+        errorInit();
+    }
+
+    /**
+     * 使用int型二维数组创建Matrix对象, 使用传入的数字填充空白处
+     * @param intData 要输入的int型二维数组
+     * @param defaultInt 空白处填充的数字
+     */
+    public Matrix(int[][] intData, int defaultInt) {
+        this.defaultInt = defaultInt;
+        setIntAarry(intData, defaultInt);
+        errorInit();
+    }
+
+
+    /**
+     * 传入int型的二维数组，由于二维数组的每一行有才有端，影响程序运行，所以必须设置一个默认值填充空白处
+     * 矩阵的列数将会是最长行的长度，也就是矩阵一定是矩阵，而二维数组不一定，这中间需要有一个转换
+     * @param data 要输入的int型二维数组
+     * @param defaultInt 空白处填充的数字
+     */
+    public void setIntAarry(int[][] data, int defaultInt)
+    {
+        int maxColumn = getArraryMaxCloumn(data);
+        int[]temp = new int[maxColumn];
+        for (int i= 0; i< data.length;i++)
+        {
+            if(data[i].length<maxColumn)
+            {
+                for(int j=0;j<maxColumn;j++)
+                {
+                    if(j<data[i].length)
+                    {
+                        temp[j] = data[i][j];
+                    }
+                    else
+                    {
+                        temp[j] = defaultInt;
+                    }
+                    data[i] = temp;
+                }
+            }
+        }
+        this.intData = data;
+    }
+
+    /**
+     * 传入char型的二维数组，由于二维数组的每一行有才有端，影响程序运行，所以必须设置一个默认值填充空白处
+     * 矩阵的列数将会是最长行的长度，也就是矩阵一定是矩阵，而二维数组不一定，这中间需要有一个转换
+     * @param data 要输入的char型二维数组
+     * @param defaultInt 空白处填充的字符
+     */
+    public void setCharAarry(char[][] data, char defaultInt)
+    {
+        int maxColumn = getArraryMaxCloumn(data);
+        char[] temp = new char[maxColumn];
+        for (int i= 0; i<getRow();i++)
+        {
+            if(data[i].length<maxColumn)
+            {
+                for(int j=0;j<maxColumn;j++)
+                {
+                    if(j<data[i].length)
+                    {
+                        temp[j] = data[i][j];
+                    }
+                    else
+                    {
+                        temp[j] = defaultInt;
+                    }
+                    data[i] = temp;
+                }
+            }
+        }
+        this.charData = data;
     }
 
     /**
@@ -55,6 +190,7 @@ public class Matrix {
             }
         }
         this.intData = data;
+        errorInit();
     }
 
     /**
@@ -70,6 +206,7 @@ public class Matrix {
             data[0][i] = integers.get(i);
         }
         this.intData = data;
+        errorInit();
     }
 
 
@@ -79,8 +216,16 @@ public class Matrix {
      */
     public Matrix(char[][] charData) {
         type = Type.CharMatrix;
-        this.charData = charData;
+        setCharAarry(charData, defaultChar);
+        errorInit();
     }
+
+    public Matrix(char[][] charData, char defaultChar) {
+        type = Type.CharMatrix;
+        setCharAarry(charData, defaultChar);
+        errorInit();
+    }
+
 
     /**
      * 创建一个空的矩阵，默认字符可设置
@@ -100,6 +245,7 @@ public class Matrix {
             }
         }
         charData = data;
+        errorInit();
     }
 
     /**
@@ -114,6 +260,7 @@ public class Matrix {
             tempCharData[0][i] = data.charAt(i);
         }
         charData = tempCharData;
+        errorInit();
     }
 
     /**
@@ -133,7 +280,7 @@ public class Matrix {
         {
             if(thisRow != addedRow || thisColumn != addedColumn)
             {
-                System.out.println("Two matrix have different row number or column number!");
+                errorList.enableError(this.getClass(), ErrorNumber.MatrixSizeNotMatch);
                 return false;
             }
         }
@@ -141,7 +288,7 @@ public class Matrix {
         {
             if(thisColumn != addedRow)
             {
-                System.out.println("First matrix column not equals with second matrix row");
+                errorList.enableError(this.getClass(),ErrorNumber.ColumnAndRowNotMatchAtTwo);
                 return false;
             }
         }
@@ -252,7 +399,7 @@ public class Matrix {
     {
         if(getRow() != getColumn())
         {
-            System.out.println("Matrix's row doesn't equal column.");
+            errorList.enableError(this.getClass(), ErrorNumber.ColumnAndRowNotMatch);
             return null;
         }
         return new Matrix(doubleArrayInt(new Jama.Matrix(intArrayDouble(intData)).inverse().getArray()));
@@ -271,7 +418,7 @@ public class Matrix {
             {
                 if(getIntValue(0, list) != list + 1)
                 {
-                    System.out.println("Cryptography inverse can only uses  in incremental series.");
+                    errorList.enableError(ErrorNumber.NotIncrementalSeries);
                     return null;
                 }
             }
@@ -283,7 +430,7 @@ public class Matrix {
             }
             return res;
         }
-        System.out.println("Cryptography inverse can only uses in 2*1 matrix.");
+        errorList.enableError(ErrorNumber.NotTwoRow);
         return null;
     }
 
@@ -581,5 +728,50 @@ public class Matrix {
      */
     public int getType() {
         return type;
+    }
+
+    /**
+     * 获得一个二维int数组的最大列数
+     * @param data 要操作的int型二维数组
+     * @return 最大列数
+     */
+    public int getArraryMaxCloumn(int[][] data)
+    {
+        if(data == null)
+            return 0;
+        int max = 0;
+        for(int[] list:data)
+        {
+            if(list.length > max)
+                max = list.length;
+        }
+        return max;
+    }
+
+
+    /**
+     * 获得一个二维char数组的最大列数
+     * @param data 要操作的char型二维数组
+     * @return 最大列数
+     */
+    public int getArraryMaxCloumn(char[][] data)
+    {
+        if(data == null)
+            return 0;
+        int max = 0;
+        for(char[] list:data)
+        {
+            if(list.length > max)
+                max = list.length;
+        }
+        return max;
+    }
+
+    /**
+     * 获得本类的错误列表
+     * @return 本类的错误列表
+     */
+    public ErrorList getErrorList() {
+        return errorList;
     }
 }

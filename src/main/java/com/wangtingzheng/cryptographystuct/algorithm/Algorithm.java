@@ -1,6 +1,5 @@
 package com.wangtingzheng.cryptographystuct.algorithm;
 
-
 import com.wangtingzheng.cryptographystuct.matrix.Matrix;
 
 /**
