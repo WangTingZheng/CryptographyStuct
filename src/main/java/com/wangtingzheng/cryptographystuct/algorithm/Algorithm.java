@@ -6,12 +6,12 @@ import com.wangtingzheng.cryptographystuct.matrix.Matrix;
 /**
  * @author WangTingZheng
  * @date 2020/4/30 15:33
- * @features
+ * @features 加密算法的模板类，用于继承
  */
 public abstract class Algorithm {
-    public Matrix messageSpace = null;
-    public Matrix cipherSpace = null;
-    public Matrix keySpace = null;
+    public Matrix messageSpace; //明文空间矩阵
+    public Matrix cipherSpace;  //密文空间矩阵
+    public Matrix keySpace;  //密钥空间矩阵
 
     /**
      * 使用三个空间进行初始化，数据结构采用Matrix
