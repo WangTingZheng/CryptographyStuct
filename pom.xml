@@ -6,7 +6,7 @@
 
     <groupId>com.wangtingzheng.cryptography</groupId>
     <artifactId>CryptographyStuct</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 
     <distributionManagement>
         <repository>
@@ -15,5 +15,19 @@
             <url>https://maven.pkg.github.com/WangTingZheng/CryptographyStuct</url>
         </repository>
     </distributionManagement>
+    <!-- 指明编译源代码时使用的字符编码，maven编译的时候默认使用的GBK编码， 通过project.build.sourceEncoding属性设置字符编码，告诉maven这个项目使用UTF-8来编译 -->
+       <properties>
+           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+       </properties>
+
+  <dependencies>
+      <!-- https://mvnrepository.com/artifact/gov.nist.math/jama -->
+      <dependency>
+          <groupId>gov.nist.math</groupId>
+          <artifactId>jama</artifactId>
+          <version>1.0.3</version>
+      </dependency>
+
+  </dependencies>
     
 </project>

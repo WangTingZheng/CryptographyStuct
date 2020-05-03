@@ -1,5 +1,7 @@
 package com.wangtingzheng.cryptographystuct.matrix;
 
+import Jama.Matrix;
+
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ import java.util.List;
  */
 public class IntMatrix extends MatrixClass {
 
-    public int[][] intData = null;
+    public int[][] intData;
 
     /**
      * 使用int型二维数组创建Matrix对象
@@ -24,7 +26,7 @@ public class IntMatrix extends MatrixClass {
      * 创建一个空的(元素值为0)的Matrix对象
      * @param row Matrix的行数
      * @param column Matrix的列数
-     * @param defalutInt
+     * @param defalutInt 元素的默认值
      */
     public IntMatrix(int row, int column, int defalutInt) {
         type = Type.IntMatirx;
@@ -177,7 +179,7 @@ public class IntMatrix extends MatrixClass {
         {
             for(int j = 0;j < getColumn();j++)
             {
-                res.intData[j][i] = intData[i][j];;
+                res.intData[j][i] = intData[i][j];
             }
         }
         return res;
@@ -189,8 +191,12 @@ public class IntMatrix extends MatrixClass {
      */
     public IntMatrix inverse()
     {
-        IntMatrix intMatrix = null;
-        return intMatrix;
+        if(getRow() != getColumn())
+        {
+            System.out.println("Matrix's row doesn't equal column.");
+            return null;
+        }
+        return new IntMatrix(doubleArrayInt(new Matrix(intArrayDouble(intData)).inverse().getArray()));
     }
 
     /**
@@ -224,7 +230,7 @@ public class IntMatrix extends MatrixClass {
 
     /**
      * 把本矩阵转换为字符二维数组
-     * @return
+     * @return 字符二维数组
      */
     public char[][] getChar()
     {
@@ -316,7 +322,7 @@ public class IntMatrix extends MatrixClass {
             {
                 System.out.print(ele+" ");
             }
-            System.out.println("");
+            System.out.println();
         }
     }
 
@@ -334,5 +340,35 @@ public class IntMatrix extends MatrixClass {
             }
         }
         return true;
+    }
+
+    public double[][] intArrayDouble(int[][] data)
+    {
+        if(data == null)
+            return null;
+
+        double[][] tempDouble = new double[data.length][data[0].length];
+        for(int i=0;i<getRow();i++)
+        {
+            for(int j=0;j<getColumn();j++)
+            {
+                tempDouble[i][j] = data[i][j];
+            }
+        }
+        return tempDouble;
+    }
+    public int[][] doubleArrayInt(double[][] data)
+    {
+        if(data == null)
+            return null;
+        int[][] resInt = new int[data.length][data[0].length];
+        for(int i=0;i<getRow();i++)
+        {
+            for(int j=0;j<getColumn();j++)
+            {
+                resInt[i][j] = (int) data[i][j];
+            }
+        }
+        return resInt;
     }
 }

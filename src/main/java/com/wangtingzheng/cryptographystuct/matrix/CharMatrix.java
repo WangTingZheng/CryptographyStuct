@@ -6,7 +6,7 @@ package com.wangtingzheng.cryptographystuct.matrix;
  * @features
  */
 public class CharMatrix extends MatrixClass {
-    public char charData[][] = null;
+    public char[][] charData = null;
 
     /**
      * 用字符二维数组新建矩阵对象
