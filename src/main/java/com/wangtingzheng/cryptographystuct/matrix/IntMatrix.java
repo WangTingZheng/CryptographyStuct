@@ -342,6 +342,11 @@ public class IntMatrix extends MatrixClass {
         return true;
     }
 
+    /**
+     * 把int类型的二维数组转化为double类型的二维数组
+     * @param data 要转换的int型二维数组
+     * @return int型二维数组
+     */
     public double[][] intArrayDouble(int[][] data)
     {
         if(data == null)
@@ -357,6 +362,12 @@ public class IntMatrix extends MatrixClass {
         }
         return tempDouble;
     }
+
+    /**
+     * 把double类型的二维数组转化为int类型的二维数组
+     * @param data 要转换的double型二维数组
+     * @return int型二维数组
+     */
     public int[][] doubleArrayInt(double[][] data)
     {
         if(data == null)
