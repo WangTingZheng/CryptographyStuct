@@ -20,7 +20,7 @@ public abstract class Error {
         this.belongClass = belongClass;
         this.id = id;
         enable = false;
-        this.listOfErrorList.add(errorList);
+        addToNewList(errorList);
     }
 
 
