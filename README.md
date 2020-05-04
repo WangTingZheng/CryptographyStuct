@@ -1,96 +1,19 @@
-## 密码框架
+# CryptographyStuct
 
-### 安装
-右键点击项目，选择`Add framework suppurt`，再选择`Maven`
+<a href="https://github.com/WangTingZheng/CryptographyStuct/wiki"><img src="https://pic.stackoverflow.wiki/uploadImages/125/105/4/195/2020/05/04/23/42/7804ca5c-00fd-487a-a5e3-5b8781cd77cd.svg" /></a>
 
-![maven](./docs/image/maven.png)
+如果你需要查看历史版本的文档，你可以运行下面的命令：
 
-在生成的`pom.xml`文件下的项目里添加:
-```xml
-    <dependencies>
-        <dependency>
-            <groupId>com.wangtingzheng.cryptography</groupId>
-            <artifactId>CryptographyStuct</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-    </dependencies>
 ```
-升级本库的时候，可以修改`version`的值
-
-### 使用
-首先，你必须继承算法类`Algorithm`,并重写里面的各种方法，选择你愿意使用的构造方法:
-![constructor](./docs/image/consturctors.png)
-```java
-public class AlogrithmTest extends Algorithm
-{
-     public AlogrithmTest(Matrix messageSpace, Matrix cipherSpace, Matrix keySpace) {
-            super(messageSpace, cipherSpace, keySpace);
-        }
-    
-        public Test(String message, String cipher, int[][] key) {
-            super(message, cipher, key);
-        }
-    
-        public Test(String space, int[][] key) {
-            super(space, key);
-        }
-    
-        @Override
-        public void decoding() {
-    
-        }
-    
-        @Override
-        public void encoding() {
-    
-        }
-    
-        @Override
-        public boolean checkMessageSpace() {
-            return false;
-        }
-    
-        @Override
-        public boolean checkCipherSpace() {
-            return false;
-        }
-    
-        @Override
-        public boolean checkKeySpace() {
-            return false;
-        }
-}
-```
-#### 检查
-对于`checkMessageSpace()`函数，它的任务是检查本类中的`messageSpace`，也就是明文空间是否符合加密算法的要求，你可以这样编写它:
-```java
-@Override
-public boolean checkMessageSpace() {
-    CharMatrix charMatrix = messageSpace.getMatrix();
-    char[][] data = charMatrix.charData;
-    if(....)
-    {
-        ....
-        return true;
-    }       
-    return false;
-}
-```
-当然你可以使用我给你写好的函数来协助你检查，比如说你可以直接调用一个函数来判断明文空间是否都是字母组成的字符串:
-```java
-    @Override
-    public boolean checkMessageSpace() {
-        CharMatrix charMatrix = messageSpace.getMatrix();
-        return charMatrix.checkIsLetter();
-    }
-```
-其它的检查函数同理。
-
-#### 加解密
-在`encoding()`函数中，你需要把本类中的`messageSpace`进行加密变换，再传入`cipherSpace`变量中，你可以通过本类中的三个Matrix变量空间来访问具体的明文空间、密文空间、密钥空间的值：
-```java
-char[][] message = messageSpace.getCharMatrix().charData;
-char[][] cipher = cipherSpace.getCharMatrix().charData;
-int[][] key = keySpace.getIntMatrix().intData;
+git clone https://github.com/WangTingZheng/CryptographyStuct.wiki.git
+git checkout 1.1.7 
 ```
 
+你可以在`git checkeout`后打上版本号，但是这样只能在本地查看，Github没有多版本在线阅读功能。
+
+## Getting Start
+
+- [Start](https://github.com/WangTingZheng/CryptographyStuct/wiki/Start)
+- [Matrix](https://github.com/WangTingZheng/CryptographyStuct/wiki/Matrix)
+- [Algorithm](https://github.com/WangTingZheng/CryptographyStuct/wiki/Algorithm)
+- [Error](https://github.com/WangTingZheng/CryptographyStuct/wiki/Error)
