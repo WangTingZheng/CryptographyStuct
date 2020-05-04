@@ -9,15 +9,9 @@ import java.util.List;
  * @features
  */
 public class ErrorList {
-    public List<Error> list = new ArrayList<>(); //错误列表
-
-    /**
-     * 传入一个错误来获得错误列表的对象
-     * @param error 传入的第一个错误对象
-     */
-    public ErrorList(Error error) {
-        list.add(error);
-    }
+    private List<Error> list = new ArrayList<>(); //错误列表
+    private List<Error> disabledList = new ArrayList<>();
+    private List<Error> enabledList = new ArrayList<>();
 
     /**
      * 获取到对象中的错误列表
@@ -45,13 +39,15 @@ public class ErrorList {
         boolean have = false;
         for(Error errors: list)
         {
-            if(errors.belongClass == error.belongClass && errors.id == error.id)
-            {
+            if (errors.belongClass == error.belongClass && errors.id == error.id) {
                 have = true;
+                break;
             }
         }
         if(!have)
             list.add(error);
+        if(!error.errorListContain(this))
+            error.addToNewList(this);
     }
 
     /**
@@ -62,6 +58,8 @@ public class ErrorList {
     public void addErrorUpdate(Error error)
     {
         int number = 0;
+        error.addToNewList(this);
+
         for(Error errors: list)
         {
             if(errors.belongClass == error.belongClass && errors.id == error.id)
@@ -83,7 +81,7 @@ public class ErrorList {
     {
         for(Error error: list)
         {
-            if(error.id == id && error.enable)
+            if(error.id == id && error.isEnable())
                 error.errorReport();
         }
     }
@@ -94,11 +92,11 @@ public class ErrorList {
      * @param thisClass 来自的类，使用ClassName.getClass()来获取
      * @param id 错误的id
      */
-    public void doErrorReportAcrroding(Class thisClass, int id)
+    public void doErrorReportAccordingClassAndId(Class thisClass, int id)
     {
         for(Error error: list)
         {
-            if(error.belongClass == thisClass && error.id ==id && error.enable)
+            if(error.belongClass == thisClass && error.id ==id && error.isEnable())
                 error.errorReport();
         }
     }
@@ -110,7 +108,7 @@ public class ErrorList {
     {
         for(Error error: list)
         {
-            if(error.enable)
+            if(error.isEnable())
                 error.errorReport();
         }
     }
@@ -127,8 +125,7 @@ public class ErrorList {
         {
             if(error.belongClass == thisClass && error.id ==id)
             {
-                error.enable = true;
-                error.errorReport();
+                error.enable();
             }
         }
     }
@@ -146,8 +143,7 @@ public class ErrorList {
         {
             if(error.id ==id)
             {
-                error.enable = true;
-                error.errorReport();
+                error.enable();
             }
         }
     }
@@ -164,7 +160,7 @@ public class ErrorList {
         {
             if(error.belongClass == thisClass && error.id ==id)
             {
-                error.enable = true;
+                error.enableDoNotReport();
             }
         }
     }
@@ -181,7 +177,7 @@ public class ErrorList {
         {
             if(error.id ==id)
             {
-                error.enable = true;
+                error.enableDoNotReport();
             }
         }
     }
@@ -198,7 +194,7 @@ public class ErrorList {
         {
             if(error.belongClass == thisClass && error.id ==id)
             {
-                error.enable = false;
+                error.disable();
             }
         }
     }
@@ -214,9 +210,9 @@ public class ErrorList {
     {
         for(Error error: list)
         {
-            if(error.id ==id)
+            if(error.id == id)
             {
-                error.enable = false;
+                error.disable();
             }
         }
     }
@@ -228,15 +224,7 @@ public class ErrorList {
      */
     public List<Error> getEnableError()
     {
-        List<Error> res = new ArrayList<>();
-        for(Error error: list)
-        {
-            if(error.enable)
-            {
-               res.add(error);
-            }
-        }
-        return res;
+       return enabledList;
     }
 
 
@@ -246,14 +234,20 @@ public class ErrorList {
      */
     public List<Error> getDisableError()
     {
-        List<Error> res = new ArrayList<>();
-        for(Error error: list)
+        return disabledList;
+    }
+
+    public void update(Error error)
+    {
+        if(error.isEnable())
         {
-            if(!error.enable)
-            {
-                res.add(error);
-            }
+            disabledList.remove(error);
+            enabledList.add(error);
         }
-        return res;
+        else
+        {
+            enabledList.remove(error);
+            disabledList.add(error);
+        }
     }
 }

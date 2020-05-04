@@ -1,5 +1,6 @@
 package com.wangtingzheng.cryptographystuct.algorithm;
 
+import com.wangtingzheng.cryptographystuct.error.ErrorTemplate;
 import com.wangtingzheng.cryptographystuct.matrix.Matrix;
 
 /**
@@ -7,7 +8,7 @@ import com.wangtingzheng.cryptographystuct.matrix.Matrix;
  * @date 2020/4/30 15:33
  * @features 加密算法的模板类，用于继承
  */
-public abstract class Algorithm {
+public abstract class Algorithm extends ErrorTemplate {
     public Matrix messageSpace; //明文空间矩阵
     public Matrix cipherSpace;  //密文空间矩阵
     public Matrix keySpace;  //密钥空间矩阵

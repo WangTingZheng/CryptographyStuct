@@ -1,9 +1,8 @@
-package com.wangtingzheng.cryptographystuct.example;
+package com.wangtingzheng.cryptographystuct.example.error;
 
 import com.wangtingzheng.cryptographystuct.error.Error;
 import com.wangtingzheng.cryptographystuct.error.ErrorList;
 import com.wangtingzheng.cryptographystuct.matrix.Matrix;
-
 import java.util.List;
 
 /**
@@ -21,6 +20,7 @@ public class ErrorExample {
         Matrix matrix2 = new Matrix(data1); //用数组初始化矩阵
         matrix1.addWith(matrix2); //把矩阵1和矩阵2相加，结果必然出错，因为它们的大小不同
         ErrorList errorList = matrix1.getErrorList(); //获取执行后的错误列表对象
+
         List<Error> errors = errorList.getEnableError(); //获取执行后的已经被触发的错误列表
         for(Error error: errors) //遍历错误列表
         {

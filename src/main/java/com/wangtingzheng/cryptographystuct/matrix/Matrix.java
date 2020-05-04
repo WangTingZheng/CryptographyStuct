@@ -2,6 +2,8 @@ package com.wangtingzheng.cryptographystuct.matrix;
 
 import com.wangtingzheng.cryptographystuct.error.Error;
 import com.wangtingzheng.cryptographystuct.error.ErrorList;
+import com.wangtingzheng.cryptographystuct.error.ErrorTemplate;
+
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ import java.util.List;
  * @date 2020/5/1 18:06
  * @features
  */
-public class Matrix {
+public class Matrix extends ErrorTemplate {
 
     public static class Operation
     {
@@ -32,59 +34,63 @@ public class Matrix {
         public static int ColumnAndRowNotMatch = 3;
         public static int NotIncrementalSeries = 4;
         public static int NotTwoRow = 5;
+
     }
 
     private int type;  //矩阵的类型，定义在Matrix.Type中
     public int[][] intData;  //int型矩阵的数据存储二维数组
     public char[][] charData; //char型矩阵的数据存储二维数组
-    public ErrorList errorList;  //错误列表，存储程序运行时出现过的错误
     public int defaultInt = 0;  //默认int型元素值，当二维数组的各行长度不一样时，填补较短行空白元素的值
     public char defaultChar = 'a'; //默认char型元素值，当二维数组的各行长度不一样时，填补较短行空白元素的值
+
 
     /**
      * 错误设定初始化函数，设定了在本类中会出现的错误的id和发生时执行的函数
      */
+    @Override
     public void errorInit()
     {
-        Error error1 = new Error(ErrorNumber.MatrixSizeNotMatch, this.getClass()) {
+        Error MatrixSizeNotMatch = new Error(ErrorNumber.MatrixSizeNotMatch, this.getClass(), errorList) {
             @Override
             public void errorReport() {
                 System.out.println("Two matrix have different row number or column number!");
             }
         };
-        Error error2 = new Error(ErrorNumber.ColumnAndRowNotMatchAtTwo, this.getClass()) {
+        Error ColumnAndRowNotMatchAtTwo = new Error(ErrorNumber.ColumnAndRowNotMatchAtTwo, this.getClass(),errorList) {
             @Override
             public void errorReport() {
                 System.out.println("First matrix column not equals with second matrix row");
             }
         };
 
-        Error error3 = new Error(ErrorNumber.ColumnAndRowNotMatch, this.getClass()) {
+        Error ColumnAndRowNotMatch = new Error(ErrorNumber.ColumnAndRowNotMatch, this.getClass(),errorList) {
             @Override
             public void errorReport() {
                 System.out.println("Matrix's row doesn't equal column.");
             }
         };
 
-        Error error4 = new Error(ErrorNumber.NotIncrementalSeries, this.getClass()) {
+        Error NotIncrementalSeries = new Error(ErrorNumber.NotIncrementalSeries, this.getClass(),errorList) {
             @Override
             public void errorReport() {
                 System.out.println("Cryptography inverse can only uses  in incremental series.");
             }
         };
 
-        Error error5 = new Error(ErrorNumber.NotTwoRow, this.getClass()) {
+        Error NotTwoRow = new Error(ErrorNumber.NotTwoRow, this.getClass(),errorList) {
             @Override
             public void errorReport() {
                 System.out.println("Cryptography inverse can only uses in 2*1 matrix.");
             }
         };
 
-        ErrorList errorList = new ErrorList(error1);
-        errorList.addError(error2);
-        errorList.addError(error3);
-        errorList.addError(error4);
-        errorList.addError(error5);
+
+        ErrorList errorList = new ErrorList();
+        errorList.addError(MatrixSizeNotMatch);
+        errorList.addError(ColumnAndRowNotMatchAtTwo);
+        errorList.addError(ColumnAndRowNotMatch);
+        errorList.addError(NotIncrementalSeries);
+        errorList.addError(NotTwoRow);
         this.errorList = errorList;
     }
 
@@ -96,7 +102,6 @@ public class Matrix {
     public Matrix(int[][] intData) {
         type = Type.IntMatrix;
         setIntAarry(intData, defaultInt);
-        errorInit();
     }
 
     /**
@@ -107,7 +112,6 @@ public class Matrix {
     public Matrix(int[][] intData, int defaultInt) {
         this.defaultInt = defaultInt;
         setIntAarry(intData, defaultInt);
-        errorInit();
     }
 
 
@@ -123,7 +127,7 @@ public class Matrix {
         int[]temp = new int[maxColumn];
         for (int i= 0; i< data.length;i++)
         {
-            if(data[i].length<maxColumn)
+            if(data[i].length < maxColumn)
             {
                 for(int j=0;j<maxColumn;j++)
                 {
@@ -152,13 +156,13 @@ public class Matrix {
     {
         int maxColumn = getArraryMaxCloumn(data);
         char[] temp = new char[maxColumn];
-        for (int i= 0; i<getRow();i++)
+        for (int i= 0; i< data.length;i++)
         {
-            if(data[i].length<maxColumn)
+            if(data[i].length< maxColumn)
             {
-                for(int j=0;j<maxColumn;j++)
+                for(int j=0; j< maxColumn; j++)
                 {
-                    if(j<data[i].length)
+                    if(j < data[i].length)
                     {
                         temp[j] = data[i][j];
                     }
@@ -177,20 +181,19 @@ public class Matrix {
      * 创建一个空的(元素值为0)的Matrix对象
      * @param row Matrix的行数
      * @param column Matrix的列数
-     * @param defalutInt 元素的默认值
+     * @param defaultInt 元素的默认值
      */
-    public Matrix(int row, int column, int defalutInt) {
+    public Matrix(int row, int column, int defaultInt) {
         type = Type.IntMatrix;
         int[][] data = new int[row][column];
         for(int i=0; i<row; i++)
         {
             for(int j=0; j<column; j++)
             {
-                data[i][j] = defalutInt;
+                data[i][j] = defaultInt;
             }
         }
         this.intData = data;
-        errorInit();
     }
 
     /**
@@ -206,7 +209,6 @@ public class Matrix {
             data[0][i] = integers.get(i);
         }
         this.intData = data;
-        errorInit();
     }
 
 
@@ -217,13 +219,11 @@ public class Matrix {
     public Matrix(char[][] charData) {
         type = Type.CharMatrix;
         setCharAarry(charData, defaultChar);
-        errorInit();
     }
 
     public Matrix(char[][] charData, char defaultChar) {
         type = Type.CharMatrix;
         setCharAarry(charData, defaultChar);
-        errorInit();
     }
 
 
@@ -231,21 +231,20 @@ public class Matrix {
      * 创建一个空的矩阵，默认字符可设置
      * @param row 矩阵的行数
      * @param column 矩阵的列数
-     * @param defalutChar 每个元素的默认字符
+     * @param defaultChar 每个元素的默认字符
      */
-    public Matrix(int row, int column, char defalutChar)
+    public Matrix(int row, int column, char defaultChar)
     {
         type = Type.CharMatrix;
         char[][] data = new char[row][column];
-        for(int i=0;i<row;i++)
+        for(int i=0; i<row; i++)
         {
-            for(int j=0;j<column;j++)
+            for(int j=0; j<column; j++)
             {
-                data[i][j] = defalutChar;
+                data[i][j] = defaultChar;
             }
         }
         charData = data;
-        errorInit();
     }
 
     /**
@@ -260,7 +259,6 @@ public class Matrix {
             tempCharData[0][i] = data.charAt(i);
         }
         charData = tempCharData;
-        errorInit();
     }
 
     /**
@@ -280,6 +278,7 @@ public class Matrix {
         {
             if(thisRow != addedRow || thisColumn != addedColumn)
             {
+
                 errorList.enableError(this.getClass(), ErrorNumber.MatrixSizeNotMatch);
                 return false;
             }
@@ -308,9 +307,9 @@ public class Matrix {
 
             for(int i=0;i<getRow();i++)
             {
-                for(int j =0;j<getColumn();j++)
+                for(int j =0;j<getColumn(); j++)
                 {
-                    matrixRes.setValue(i, j, getIntValue(i,j)+matrix.getIntValue(i,j));
+                    matrixRes.setValue(i, j, getIntValue(i, j)+ matrix.getIntValue(i, j));
                 }
             }
             return matrixRes;
@@ -765,13 +764,5 @@ public class Matrix {
                 max = list.length;
         }
         return max;
-    }
-
-    /**
-     * 获得本类的错误列表
-     * @return 本类的错误列表
-     */
-    public ErrorList getErrorList() {
-        return errorList;
     }
 }
